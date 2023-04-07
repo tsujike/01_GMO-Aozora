@@ -103,13 +103,22 @@ function testLINE() {
 
   const l = new LINE();
 
-  const text = "テストです🚀";
+  //グループLINEにメッセージを送信
+    const text = "テストです🚀";
 
-  const messageObject = [{
-    'type': 'text',
-    'text': text
-  }];
-  console.log(l.sendBroadbandMessage(messageObject));
+    const messageObject = [{
+        'type': 'text',
+        'text': text
+        }];
+    console.log(l.sendUniquePushMessage(messageObject, l.GLOUPID));
+
+//   const text = "テストです🚀";
+
+//   const messageObject = [{
+//     'type': 'text',
+//     'text': text
+//   }];
+//   console.log(l.sendBroadbandMessage(messageObject));
 
 
 //   const messageObject = [
