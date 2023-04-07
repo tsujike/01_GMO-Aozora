@@ -103,78 +103,54 @@ function testLINE() {
 
   const l = new LINE();
 
-  // const text = "テストです🚀";
+  const text = "テストです🚀";
 
-  // const messageObject = [{
-  //   'type': 'text',
-  //   'text': text
-  // }];
-  // console.log(l.sendBroadbandMessage(messageObject));
-
-
-  const messageObject = [
-    {
-      "type": "template",
-      "altText": "アンケートに回答ください",
-      "template": {
-        "type": "buttons",
-        "title": "ご職業は？",
-        "text": "以下の中からお選びください",
-        "actions": [
-          {
-            "type": "postback",
-            "label": "会社役員",
-            "data": "会社役員", //.postback.dataで文字列を返す
-            "displayText": "会社役員"
-          },
-          {
-            "type": "postback",
-            "label": "会社員",
-            "data": "会社員", //.postback.dataで文字列を返す
-            "displayText": "会社員"
-          },
-          {
-            "type": "postback",
-            "label": "自営業・フリーランス",
-            "data": "自営業・フリーランス", //.postback.dataで文字列を返す
-            "displayText": "自営業・フリーランス"
-          },
-          {
-            "type": "postback",
-            "label": "その他",
-            "data": "その他", //.postback.dataで文字列を返す
-            "displayText": "その他"
-          }
-        ]
-      }
-    }
-  ];
+  const messageObject = [{
+    'type': 'text',
+    'text': text
+  }];
   console.log(l.sendBroadbandMessage(messageObject));
 
 
+//   const messageObject = [
+//     {
+//       "type": "template",
+//       "altText": "アンケートに回答ください",
+//       "template": {
+//         "type": "buttons",
+//         "title": "ご職業は？",
+//         "text": "以下の中からお選びください",
+//         "actions": [
+//           {
+//             "type": "postback",
+//             "label": "会社役員",
+//             "data": "会社役員", //.postback.dataで文字列を返す
+//             "displayText": "会社役員"
+//           },
+//           {
+//             "type": "postback",
+//             "label": "会社員",
+//             "data": "会社員", //.postback.dataで文字列を返す
+//             "displayText": "会社員"
+//           },
+//           {
+//             "type": "postback",
+//             "label": "自営業・フリーランス",
+//             "data": "自営業・フリーランス", //.postback.dataで文字列を返す
+//             "displayText": "自営業・フリーランス"
+//           },
+//           {
+//             "type": "postback",
+//             "label": "その他",
+//             "data": "その他", //.postback.dataで文字列を返す
+//             "displayText": "その他"
+//           }
+//         ]
+//       }
+//     }
+//   ];
+//   console.log(l.sendBroadbandMessage(messageObject));
 
-  // const messageObject = [
-  //   {
-  //     "type": "template",
-  //     "altText": "アンケートに回答ください",
-  //     "template": {
-  //       "type": "buttons",
-  //       "title": "緊急度はいかがですか？",
-  //       "text": "この漢字の読み方は？",
-  //       "actions": [ //答えが1つだとしてもこうするのか。なるほど。
-  //         {
-  //           "type": "postback",
-  //           "label": "postback",　//ラベルもいろいろ設定できそうだな・・・・
-  //           "data": "これはポストbackでスプシに転送できなかったなWHY?", //.postback.dataで文字列を返す
-  //           "displayText": "なにを選択したでしょう。キーボードを開かせましょう",
-  //           "inputOption": "openKeyboard",
-  //         }
-  //       ]
-  //     }
-  //   }
-  // ];
 
-  // const replyToken = "2ca179cb011044718e6c0dfc26b5f780";
 
-  // console.log(l.sendReplyMessage(messageObject, replyToken));
 }
