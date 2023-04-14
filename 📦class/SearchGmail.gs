@@ -36,10 +36,9 @@ class SearchGmail {
 
 
     /**メールトークンを取得するメソッド
-     * @param {object} messages - messagesオブジェクト
      * @return {string} mailToken
      */
-    getMailToken(messages) {
+    getMailToken() {
         const messages = this.getMessages();
         const message = messages[0][0];
         const mailToken = message.getPlainBody().match(/https:\/\/.*$/gm)[0];
