@@ -9,78 +9,134 @@ class SearchGmail {
      * @constructor
      *  */
     constructor(start, max, searchWith) {
-        this.start = start;
-        this.max = max;
-        this.searchWith = searchWith;
+      this.start = start;
+      this.max = max;
+      this.searchWith = searchWith;
     }
-
-    /** 指定したmessagesオブジェクトを取得するメソッド
-    * @return {object} messages
+  
+    /** 指定したmessagesオブジェクトの配列を取得するメソッド
+    * @return {array} messages
     */
-    getMessages() {
-        const threads = GmailApp.search(this.searchWith, this.start, this.max);
-        const messages = GmailApp.getMessagesForThreads(threads);
-        return messages;
+    getMessages_() {
+      const threads = GmailApp.search(this.searchWith, this.start, this.max);
+      const messages = GmailApp.getMessagesForThreads(threads);
+      return messages;
     }
-
-
-    /** 指定したmessageオブジェクトのsubjectを取得するメソッド
-     * @param {object} message - messageオブジェクト
-     * @return {string} subject
+  
+    /** messagesオブジェクトの各要素を格納した配列を取得するメソッド
+     * @return {array} messageObjects
      * */
-    getClientNameFromSubject(message, reg) {
-        const subject = this.getCustomSubject(message);
-        const clientName = subject.match(reg)[0];
-        return clientName;
+    getMessageObjects() {
+      const messages = this.getMessages_();
+      const messageObjects = messages.map(message => {
+        return {
+          id: message[0].getId(),
+          subject: message[0].getSubject(),
+          body: message[0].getPlainBody(),
+          date: message[0].getDate(),
+          sender: message[0].getFrom(),
+          recipient: message[0].getTo(),
+          threadId: message[0].getThread().getId(),
+          isStarred: message[0].isStarred(),
+          message: message[0]
+        };
+      });
+      return messageObjects;
     }
-
-
-    /**メールトークンを取得するメソッド
+  
+  
+    /** bodyから正規表現でメールトークンを取得するメソッド
+     * @param {object} messageObject
      * @return {string} mailToken
      */
-    getMailToken() {
-        const messages = this.getMessages();
-        const message = messages[0][0];
-        const mailToken = message.getPlainBody().match(/https:\/\/.*$/gm)[0];
-        return mailToken;
+    getMailToken(messageObject) {
+      const body = messageObject.body;
+      const reg = /■メールトークン[^0-9]*(\d+)/;
+      const mailToken = body.match(reg)[0];
+      return mailToken.replace("■メールトークン：", "");
     }
-
-    /** メッセージにスターを付けるメソッド
-     * @param {object} message - messageオブジェクト
+  
+  
+    /** スターが含まれていない配列を作成するメソッド
+     * @param {object} messageObject
+     * @return {string} mailToken
      */
-    addStar(message) {
-        message.addLabel(GmailApp.getUserLabelByName("★"));
+    getUnstarredMessages() {
+      const messageObjects = this.getMessageObjects();
+      const unstarredMessages = messageObjects.filter(message => !message.isStarred);
+      return unstarredMessages;
     }
-
-    /** メッセージにスターが付いてか判定するメソッド
-     * @param {object} message - messageオブジェクト
-     * @return {boolean} isStarred
-     * */
-    isStarred(message) {
-        const isStarred = message.isStarred();
-        return isStarred;
+  
+  
+    /** subjectに「メールトークン」が含まれているかどうか判定するメソッド
+      * @param {object} messageObject
+      * @return {boolean} 
+      */
+    isMailToken(messageObject) {
+      const subject = messageObject.subject;
+      console.log(subject);
+      const targetString = 'メールトークン';
+      return subject.includes(targetString);
     }
-
-    /** bodyから正規表現で○○を取得するメソッド
-     * @param {object} message - messageオブジェクト
-     * @param {object} reg - 正規表現
-     * @return {string} result
-     */
-    getCustomBody(message, reg) {
-        const body = message.getPlainBody();
-        const result = body.match(reg)[0];
-        return result;
+  
+  
+  }
+  
+  
+  
+  
+  //SearchGmailクラスをテストする関数
+  function testSearchGmail() {
+  
+    //SearchGmailクラスのインスタンスを作成
+    const s = new SearchGmail(0, 20, "label:09_gmoあおぞらネット銀行");
+  
+    //指定したmessagesオブジェクトの配列を取得するメソッド
+    const messages = s.getMessageObjects();
+    console.log(messages.length);
+  
+    //受け取ったmessagesオブジェクトの各要素を格納した配列を取得するメソッド
+    const messageObjects = s.getMessageObjects(messages);
+    console.log(messageObjects.length);
+  
+  
+    //先頭1件のみ
+    // const messageObject = messageObjects[0];
+  
+    //subjectに「メールトークン」が含まれているかどうか判定するメソッド
+    // console.log(s.isMailToken(messageObject));
+  
+    //bodyから正規表現でトークンを取得するメソッド
+    // if (s.isMailToken(messageObject)) {
+      // const mailToken = s.getMailToken(messageObject);
+      // console.log(mailToken);
+    // }
+  
+  
+    //スターが含まれていない配列を作成する
+    const unStarredArray = s.getUnstarredMessages();
+    unStarredArray.forEach(message => console.log(message.subject));
+  
+    console.log(unStarredArray.length);
+  
+    
+    for (const messageObject of unStarredArray){
+  
+      console.log(messageObject.subject)
+      console.log(messageObject.date)
+      console.log(messageObject.isStarred)
+  
     }
-
-}
-
-
-
-//SearchGmailクラスをテストする関数
-function testSearchGmail() {
-    const searchGmail = new SearchGmail(0, 10, "label:09_gmoあおぞらネット銀行");
-    const messages = searchGmail.getMessages();
-    const message = messages[0][0];
-    const clientName = searchGmail.getClientNameFromSubject(message, /【GMO】.*【/);
-    console.log(clientName);
-}
+  
+    //messagesオブジェクトにStarを付けるメソッド
+    // messageObject.message.star();
+  
+    //bodyから正規表現でトークンを取得するメソッド
+    // if (unStarredArray.length) {
+      // const mailToken = s.getMailToken(unStarredArray[0]);
+      // console.log(mailToken);
+    // }
+  
+  }
+  
+  
